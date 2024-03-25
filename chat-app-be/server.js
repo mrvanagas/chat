@@ -1,34 +1,32 @@
 const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
 
-const { MONGO_DB_USER, MONGO_DB_PASSWORD, PORT } = process.env;
-//TODO: Refactor connection logic, add more variables to env variables
-app.use(cors());
-app.use(express.json());
+const http = require('http');
+const { Server } = require('socket.io');
 
-app.get('/', (req, res) => {
-  res.send('server is running');
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Adjust this to match your client's URL
+    methods: ["GET", "POST"],
+  }
 });
 
-const db = mongoose.connection;
-mongoose
-  .connect(
-    `mongodb+srv://${MONGO_DB_USER}:${MONGO_DB_PASSWORD}@cluster0.loap8e9.mongodb.net/?appName=Cluster0`,
-    {
-      useUnifiedTopology: true,
-    }
-  )
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.log(err));
+io.on('connection', (socket) => {
+  console.log('A user connected');
 
-db.once('open', () => {
-  app.listen(PORT, () => {
-    console.log(`server is running on http://localhost:${PORT}`);
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+
+  socket.on('chat message', (msg) => {
+    console.log('Message Received: ', msg);
+    io.emit('chat message', msg);
   });
 });
 
-db.on('error', () => console.error('FAILED TO CONNECT TO DB'));
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
