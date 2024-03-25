@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatHeader from '../components/chat/ChatHeader';
 import ChatOutput from '../components/chat/ChatOutput';
 import MessageInput from '../components/chat/MessageInput';
 import SendButton from '../shared/Button/Button';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:8888');
 
 const GlobalLayout: React.FC = () => {
   const [messages, setMessages] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
 
+  useEffect(() => {
+    socket.on('chat message', (msg: string) => {
+      console.log('Message:', msg);
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+  
+    return () => {
+      socket.off('chat message');
+    };
+  }, []);
+
   const sendMessage = () => {
     if (currentMessage.trim() !== '') {
-      setMessages([...messages, currentMessage]);
+      socket.emit('chat message', currentMessage);
       setCurrentMessage('');
     }
   };
