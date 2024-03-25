@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 const db = mongoose.connection;
 mongoose
   .connect(
-    `mongodb+srv://${MONGO_DB_USER}:${MONGO_DB_PASSWORD}@cluster0.7qajsgr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
+    `mongodb+srv://${MONGO_DB_USER}:${MONGO_DB_PASSWORD}@cluster0.loap8e9.mongodb.net/?appName=Cluster0`,
     {
       useUnifiedTopology: true,
     }
