@@ -5,7 +5,7 @@ import MessageInput from '../components/chat/MessageInput';
 import SendButton from '../shared/Button/Button';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:8888');
+const socket = io('http://192.168.0.193:8888');
 
 const GlobalLayout: React.FC = () => {
   const [messages, setMessages] = useState<string[]>([]);
