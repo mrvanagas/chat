@@ -3,6 +3,7 @@ require('dotenv').config();
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
+const cors = require('cors');
 const { setupWebSocket } = require('./services/socket');
 const connectDB = require('./config/db');
 const collectionsRoutes = require('./api/routes/collectionsRoutes'); // Adjust path as necessary
@@ -12,6 +13,7 @@ const authRoutes = require('./api/routes/auth-routes');
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // Routes
 app.use('/api', collectionsRoutes); // Mount the collections routes
